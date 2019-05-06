@@ -18,11 +18,14 @@ var wordList = [
 //for loop to match blanks to letters to identify when word has been guessed.
 var wins = 0;
 var userGuessesLeft = 12;
+var isSolved = false;
+var wordToGuess
+var answerString
 var directionsText = document.getElementById("directions-text");
 var answerArray = [];
 var guessed = [];
 var currentWord = document.getElementById("current-word");
-var secretWord
+var secretWord = [];
 var userWins = document.getElementById("user-wins");
 // var userLosses = document.getElementById("user-losses");
 var guessesLeft = document.getElementById("guesses-left");
@@ -41,28 +44,28 @@ function baseValues() {
     secretWord = wordList[Math.floor(Math.random() * wordList.length)];
     //console.log(secretWord);
     secretWord = secretWord.toLowerCase();
-    console.log(secretWord);
     wordToGuess = secretWord;
+    console.log("Word to Guess is " + wordToGuess);
 
 
 
     //var wordLetters = str.split("");
     for (var i = 0; i < secretWord.length; i++) {
-        console.log("secret word character is: " + secretWord[i]);
+
         if (secretWord[i] === " ") {
             answerArray.push("*");
-            console.log("the space is now " + secretWord[i]);
+
         } else {
             answerArray.push("_");
-            console.log("The underscore is now: " + secretWord[i]);
+
         }
 
-        currentWord.textContent = answerArray.join(' ');
+        currentWord.textContent = ("Current Word: " + answerArray.join(' '));
 
 
     };
     guessesLeft.innerText = ("Guesses left: " + userGuessesLeft);
-    
+
 
 }
 
@@ -73,29 +76,37 @@ document.onkeyup = function (event) {
     //reset function when they open the page and the call the reset function when they win or lose. 
     //if .includes if exists then .indexof to see where it exists
     var userGuess = event.key.toLowerCase();
-   
-    if (secretWord.includes(userGuess)) {
+    console.log("is solved is " + isSolved);
+
+
+    if (secretWord.includes(userGuess) && isSolved === false) {
 
         for (var i = 0; i < secretWord.length; i++) {
-
+            //check secretWord to determine if userGuess letter is in the word.
             if (secretWord[i] === userGuess) {
                 answerArray[i] = userGuess;
+
+                if (answerArray.includes("_") === false) {
+                    wins++;
+                    reset();
+                    console.log("Is solved is equal to " + isSolved);
+                };
                 currentWord.textContent = answerArray.join(' ');
-                // console.log("the current word now looks like " + currentWord);
+
             };
         }
 
     } else {
-        if(guessed.includes(userGuess)){
+        if (guessed.includes(userGuess)) {
 
-        }else{
+        } else {
             if (userGuessesLeft > 1) {
                 userGuessesLeft--
                 guessed.push(userGuess);
-        
+
             } else {
                 userGuessesLeft--
-               reset();
+                reset();
             };
         }
 
@@ -106,7 +117,7 @@ document.onkeyup = function (event) {
 
 }
 
-function reset(){
+function reset() {
     guessed = [];
     answerArray = [];
     userGuessesLeft = 12;
